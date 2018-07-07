@@ -9,19 +9,19 @@ The main.cpp is the interface between the simulator and the pid class. It receiv
 Then, the crosstrack-error is used to PID-control the steering angle. The PID class is initialized with PID-Coefficients. 
 Calculating the PID-errors in each timestep, it returns the steering angle. 
 
-The parameters are tuned as follows: First, some p-value is guessed. The error value is 4 when the car is at the border of the road, then the steering angle shall be +-1. 
-The parameter 0.2 for Kp seems to work fine, but the car is oscillating heavy. The Kd value serves to dampen the oscillations by countering a large error-gradient. 
+The parameters are tuned as follows: First, some p-value is guessed. The error value is 4 when the car is at the border of the road, then the steering angle should be 1. 
+The parameter 0.2 for Kp seems to work fine on a full lap, but the car is oscillating heavily. The Kd value serves by dampening the oscillations. 
 As long as disturbances lead to oscillation of the system, the d-part is too small, thus the system is unstable. 
-The i-part sums up the entire error history. One issue in this simulator is that the error is currently frame-rate dependend, since it gets summed at every step. 
-If the i-part is too high, the car stays on the left side of the road after a tight right corner, because the integral has learned to keep left during the right corner. 
-The system was tuned so the car stays in the middle after each corner. An i-part helps in tight corners, because a smaller p-part gets supported. 
+The i-part sums up the entire error history. One issue in the given implementation is that the error is currently frame-rate dependend, since it gets summed at every step. 
+If the i-part is too strong, the car stays on the one side of the road after a tight corner, because the integral has learned to steer into the tight corner. 
+The system was tuned so the car stays in the middle after each corner. Yet, a small i-part helps in situations where a small p-part doesn't steer enough to get the corner and the car drifts towards the outside. 
 
-Basically, the uncertainty of actuation and the time delay lead to an increased p-part. This p-part leads to an uncomfortable steering input, because it needs to react quick to not fall of the cliff. 
+Basically, both uncertainty of actuation and time delay lead to the necessity of a strong p-part. This p-part leads to an uncomfortable steering input, because it needs to react quickly and strongly to stay in lane. 
 If the system cannot be improved either in actuation or time delay, the controller needs to look into the future to start steering before the car is off the desired track. 
-Thus, the need for model-predictive control. 
+Then, model-predictive control improves systems behavior. 
 
-The result for the parameters Kp 0.15, Ki 0.0005 and Kd 7.0 are shown in the following video. The accelerator is fixed at 0.5 (50 %). On tight corners, the car just stays on track to achieve the best comfort 
-for a given system behavior.
+The result for the parameters Kp 0.15, Ki 0.0005 and Kd 7.0 is shown in the following video. The accelerator is fixed at 0.5 (50 %). On tight corners, the car just stays on track while achieving the best comfort 
+possible with a given systems behavior.
 
 
 
